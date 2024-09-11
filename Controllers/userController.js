@@ -8,7 +8,7 @@ exports.validateUser = async (req, res) => {
   }
 
   try {
-    const [rows] = await db.query('SELECT password FROM users WHERE user_name = ?', [username]);
+    const [rows] = await db.query('SELECT password FROM users WHERE username = ?', [username]);
     
     if (rows.length > 0) {
       const storedPassword = rows[0].password;
