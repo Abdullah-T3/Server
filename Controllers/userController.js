@@ -20,7 +20,7 @@ exports.validateUser = (req, res) => {
 
         if (results.length > 0) {
             const storedPassword = results[0];
-
+            console.log(storedPassword);
             if (password == storedPassword) {
                 return res.json({ success: true, message: 'Login successful' });
             } else {
