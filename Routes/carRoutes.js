@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const carController = require('../controllers/carController');
+const carController = require('../Controllers/carController');
 
 // Get all cars (GET method to retrieve all cars from the database)
 router.get('/', carController.getAllCars);
