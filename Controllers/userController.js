@@ -10,7 +10,7 @@ exports.validateUser = (req, res) => {
         return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const query = 'SELECT password FROM users WHERE user_name = ?';
+    const query = 'SELECT password FROM users WHERE username = ?';
 
     db.query(query, [username], (err, results) => {
         if (err) {
