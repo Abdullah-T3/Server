@@ -10,7 +10,7 @@ exports.validateUser = (req, res) => {
         return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const query = 'SELECT password FROM users WHERE user_name = ?';
+    const query = 'SELECT password FROM users WHERE username = ?';
 
     db.query(query, [username], (err, results) => {
         if (err) {
@@ -19,7 +19,7 @@ exports.validateUser = (req, res) => {
         }
 
         if (results.length > 0) {
-            const storedPassword = results[0].password;
+            const storedPassword = results[0];
 
             if (password == storedPassword) {
                 return res.json({ success: true, message: 'Login successful' });
