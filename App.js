@@ -4,7 +4,8 @@ const express = require('express');
 const fs = require('fs');
 const util = require('util');
 const userRoutes = require('./Routes/userRoutes');  // Import the user routes
-const carRoutes = require('./Routes/carRoutes');    // Import the car routes
+const userController = require('../controllers/userController');
+ // Import the car routes
 
 // Setup logging to a file
 const log_file = fs.createWriteStream(__dirname + '/debug.log', {flags: 'w'});
