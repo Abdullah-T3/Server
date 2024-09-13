@@ -1,28 +1,33 @@
-const db = require('../config/db');  // Import the connection pool
+// controllers/userController.js
 
-exports.validateUser = async (req, res) => {
-  const { username, password } = req.query;
+const db = require('../config/db');
 
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username and password are required' });
-  }
+// Controller to validate user login
+exports.validateUser = (req, res) => {
+    const { username, password } = req.query;
 
-  try {
-    const [rows] = await db.query('SELECT password FROM users WHERE username = ?', [username]);
-    
-    if (rows.length > 0) {
-      const storedPassword = rows[0].password;
-
-      if (password === storedPassword) {
-        return res.json({ success: true, message: 'Login successful' });
-      } else {
-        return res.status(401).json({ success: false, message: 'Invalid password' });
-      }
-    } else {
-      return res.status(404).json({ success: false, message: 'User not found' });
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
     }
-  } catch (err) {
-    console.error('Error executing query:', err);
-    return res.status(500).json({ error: 'Database query error' });
-  }
+
+    const query = 'SELECT password FROM users WHERE user_name = ?';
+
+    db.query(query, [username], (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).json({ error: 'Database query error' });
+        }
+
+        if (results.length > 0) {
+            const storedPassword = results[0].password;
+
+            if (password === storedPassword) {
+                return res.json({ success: true, message: 'Login successful' });
+            } else {
+                return res.status(401).json({ success: false, message: 'Invalid password' });
+            }
+        } else {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+    });
 };

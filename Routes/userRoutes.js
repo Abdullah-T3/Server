@@ -1,16 +1,10 @@
+// Routes/userRoutes.js
 
 const express = require('express');
 const router = express.Router();
-const userController = require('../Controllers/userController');
+const userController = require('../controllers/userController');
 
-// Define the route for validating the user
+// Validate user (GET method for login)
 router.get('/validate-user', userController.validateUser);
-// Routes/carRoutes.js
-
-const carController = require('../Controllers/carController');
-
-// Define the route to get all cars
-router.get('/', carController.getAllCars);
-
 
 module.exports = router;

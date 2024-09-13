@@ -1,26 +1,22 @@
 // config/db.js
+
 const mysql = require('mysql2');
 
-// Create a MySQL connection pool
-const pool = mysql.createPool({
-  host: 'mysql-mywork.alwaysdata.net',
-  user: 'mywork',      
-  password: 'T3mia459', 
-  database: 'mywork_cars',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+// MySQL connection configuration
+const db = mysql.createConnection({
+    host: 'mysql-mywork.alwaysdata.net',
+    user: 'mywork',      // replace with your MySQL username
+    password: 'T3mia459', // replace with your MySQL password
+    database: 'mywork_cars' // replace with your database name
 });
 
-// Handle database connection errors
-pool.on('error', (err) => {
-  console.error('Database error:', err);
-  if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-    console.error('Database connection was lost, reconnecting...');
-    // Optional: Reconnection logic could go here if you need it
-  }
+// Connect to MySQL database
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+    }
+    console.log('Connected to the MySQL database');
 });
 
-// Export the promise-based pool
-const promisePool = pool.promise();
-module.exports = promisePool;
+module.exports = db;
