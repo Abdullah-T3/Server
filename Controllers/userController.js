@@ -19,7 +19,7 @@ exports.validateUser = (req, res) => {
         }
 
         if (results.length > 0) {
-            const storedPassword = results[0];
+            const storedPassword = results[0].password;
             console.log(storedPassword);
             console.log('=====================================');
             console.log(password);
