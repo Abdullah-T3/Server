@@ -21,6 +21,9 @@ exports.validateUser = (req, res) => {
         if (results.length > 0) {
             const storedPassword = results[0];
             console.log(storedPassword);
+            console.log('=====================================');
+            console.log(password);
+            
             if (password == storedPassword) {
                 return res.json({ success: true, message: 'Login successful' });
             } else {
