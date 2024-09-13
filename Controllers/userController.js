@@ -21,7 +21,7 @@ exports.validateUser = (req, res) => {
         if (results.length > 0) {
             const storedPassword = results[0].password;
 
-            if (password === storedPassword) {
+            if (password == storedPassword) {
                 return res.json({ success: true, message: 'Login successful' });
             } else {
                 return res.status(401).json({ success: false, storedPassword, message: 'Invalid password' });
