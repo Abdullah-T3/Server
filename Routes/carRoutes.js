@@ -3,5 +3,5 @@ const router = express.Router();
 const carController = require('../Controllers/carController');
 
 router.get('/cars', carController.getAllCars);
-router.put('/cars/:id', carController.updateCar);
+router.put('/cars/:plate_number', carController.updateCar);
 module.exports = router;
