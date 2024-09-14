@@ -12,11 +12,11 @@ async function getAllCars(req, res) {
 
 async function updateCar(req, res) {
     const { plate_number } = req.params;
-    const { model, year, odometer_reading, next_oil_change } = req.body;
+    const { model, year_of_manufacture, odometer_reading, next_oil_change } = req.body;
     console.log('Updating car with plate number:', plate_number);
-    console.log('New values:', { model, year, odometer_reading, next_oil_change });
+    console.log('New values:', { model, year_of_manufacture, odometer_reading, next_oil_change });
     const sql = 'UPDATE cars SET model = ?, year_of_manufacture = ?, odometer_reading = ?, next_oil_change = ? WHERE plate_number = ?';
-    const values = [model, year, odometer_reading, next_oil_change, plate_number];
+    const values = [model, year_of_manufacture, odometer_reading, next_oil_change, plate_number];
 
     try {
         const [results] = await pool.query(sql, values);
