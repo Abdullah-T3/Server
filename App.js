@@ -1,9 +1,10 @@
+// app.js
 const express = require('express');
 const app = express();
 const carRoutes = require('./Routes/carRoutes');
 
 // Middleware
-app.use(express.json());
+app.use(express.json()); // To parse JSON bodies
 
 // Use routes
 app.use('/api', carRoutes);
