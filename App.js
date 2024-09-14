@@ -2,13 +2,17 @@
 const express = require('express');
 const app = express();
 const carRoutes = require('./Routes/carRoutes');
-
+const userRoutes = require('./Routes/userRoutes');
 // Middleware
 app.use(express.json()); // To parse JSON bodies
 
 // Use routes
 app.use('/api', carRoutes);
+// Import the userRoutes
 
+
+// Use the userRoutes
+app.use('/api', userRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
