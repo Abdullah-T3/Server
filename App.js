@@ -6,13 +6,14 @@ const userRoutes = require('./Routes/userRoutes');
 // Middleware
 app.use(express.json()); // To parse JSON bodies
 
+
+app.use('/api/users', userRoutes);
 // Use routes
 app.use('/api', carRoutes);
 // Import the userRoutes
 
 
-// Use the userRoutes
-app.use('/api', userRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
