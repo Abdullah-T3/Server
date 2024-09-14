@@ -5,11 +5,13 @@ const mysql = require('mysql2');
 // MySQL connection configuration
 const db = mysql.createConnection({
     host: 'mysql-mywork.alwaysdata.net',
-    user: 'mywork',      // replace with your MySQL username
-    password: 'T3mia459', // replace with your MySQL password
-    database: 'mywork_cars' // replace with your database name
+    user: 'mywork',      
+    password: 'T3mia459', 
+    database: 'mywork_cars' 
+    
 });
 
+  
 // Connect to MySQL database
 db.connect((err) => {
     if (err) {
