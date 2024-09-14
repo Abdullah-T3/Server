@@ -20,9 +20,8 @@ exports.validateUser = async (req, res) => {
             const storedPassword = results[0].password;
             console.log(storedPassword);
             // Compare the provided password with the stored hashed password
-            const isMatch = await bcrypt.compare(password, storedPassword);
 
-            if (isMatch) {
+            if (password === storedPassword) {
                 return res.json({ success: true, message: 'Login successful' });
             } else {
                 return res.status(401).json({ success: false, message: 'Invalid password' });
