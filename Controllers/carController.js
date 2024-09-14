@@ -15,7 +15,7 @@ function updateCar(req, res) {
     const { model, year, odometer_reading, next_oil_change } = req.body; 
 
     // SQL query to update the car
-    const sql = 'UPDATE cars SET  model = ?, year_of_manufacture = ?, odometer_reading = ?, next_oil_change= ? WHERE plate_number = ?';
+    const sql = 'UPDATE cars SET model =?,year_of_manufacture=?,odometer_reading=?,next_oil_change=? WHERE plate_number = ?';
     const values = [ model, year, odometer_reading,next_oil_change, plate_number];
 
     pool.query(sql, values, (err, results) => {
