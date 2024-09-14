@@ -1,24 +1,21 @@
-// config/db.js
-
+require('dotenv').config();
 const mysql = require('mysql2');
 
-// MySQL connection configuration
-const db = mysql.createConnection({
-    host: 'mysql-mywork.alwaysdata.net',
-    user: 'mywork',      
-    password: 'T3mia459', 
-    database: 'mywork_cars' 
-    
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    connectionLimit: 10
 });
 
-  
-// Connect to MySQL database
-db.connect((err) => {
+pool.getConnection((err, connection) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
     }
     console.log('Connected to the MySQL database');
+    connection.release();
 });
 
-module.exports = db;
+module.exports = pool;

@@ -1,17 +1,15 @@
-// controllers/carController.js
+const pool = require('../config/db');
 
-const db = require('../config/db');
-
-// Controller to get all cars
-exports.getAllCars = (req, res) => {
-    const query = 'SELECT * FROM cars';
-
-    db.query(query, (err, results) => {
+function getAllCars(req, res) {
+    pool.query('SELECT * FROM cars', (err, results) => {
         if (err) {
-            console.error('Error fetching cars data:', err);
-            return res.status(500).json({ error: 'Database query error' });
+            console.error('Error fetching cars:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
-
-        return res.json(results);
+        res.json(results);
     });
+}
+
+module.exports = {
+    getAllCars
 };
