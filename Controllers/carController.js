@@ -10,6 +10,18 @@ function getAllCars(req, res) {
     });
 }
 
+const pool = require('../config/db');
+
+function getAllCars(req, res) {
+    pool.query('SELECT * FROM cars', (err, results) => {
+        if (err) {
+            console.error('Error fetching cars:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.json(results);
+    });
+}
+
 function updateCar(req, res) {
     const { plate_number } = req.params; 
     const { model, year, odometer_reading, next_oil_change } = req.body; 
@@ -34,3 +46,4 @@ module.exports = {
     getAllCars,
     updateCar
 };
+
