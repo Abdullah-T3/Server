@@ -25,9 +25,9 @@ exports.getNoteById = async (req, res) => {
 
 // Add a new note
 exports.addNote = async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content,deadline } = req.body;
     try {
-        const result = await db.query('INSERT INTO notes (title, content) VALUES (?, ?)', [title, content]);
+        const result = await db.query('INSERT INTO notes (title, content) VALUES (?, ?, ?)', [title, content,deadline]);
         res.status(201).json({ message: 'Note created', id: result.insertId });
     } catch (error) {
         res.status(500).json({ message: 'Error creating note', error });
