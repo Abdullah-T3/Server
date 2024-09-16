@@ -5,7 +5,6 @@ const carRoutes = require('./Routes/carRoutes');
 const userRoutes = require('./Routes/userRoutes');
 const notesRoutes = require('./Routes/notesRoutes');
 // Middleware
-app.use(bodyParser.json());
 app.use(express.json()); // To parse JSON bodies
 
 
