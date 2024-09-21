@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // Assuming you have a MySQL connection configured here
+const db = require('../config/db'); // Your MySQL connection pool configured here
 
 // 1. Add a New Task (POST request)
 router.post('/add', async (req, res) => {
@@ -13,9 +13,9 @@ router.post('/add', async (req, res) => {
 
   try {
     const query = 'INSERT INTO tasks (task_title, task_description, deadline) VALUES (?, ?, ?)';
-    await db.query(query, [task_title, task_description, deadline]);
+    const [result] = await db.query(query, [task_title, task_description, deadline]);
 
-    res.status(201).json({ message: 'Task added successfully.' });
+    res.status(201).json({ message: 'Task added successfully.', task_id: result.insertId });
   } catch (error) {
     console.error('Error adding task:', error);
     res.status(500).json({ message: 'Server error.' });
@@ -40,7 +40,11 @@ router.put('/update/:task_id', async (req, res) => {
 
   try {
     const query = 'UPDATE tasks SET task_title = ?, task_description = ?, deadline = ?, is_completed = ? WHERE task_id = ?';
-    await db.query(query, [task_title, task_description, deadline, is_completed, task_id]);
+    const [result] = await db.query(query, [task_title, task_description, deadline, is_completed, task_id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Task not found.' });
+    }
 
     res.status(200).json({ message: 'Task updated successfully.' });
   } catch (error) {
@@ -55,7 +59,11 @@ router.delete('/delete/:task_id', async (req, res) => {
 
   try {
     const query = 'DELETE FROM tasks WHERE task_id = ?';
-    await db.query(query, [task_id]);
+    const [result] = await db.query(query, [task_id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Task not found.' });
+    }
 
     res.status(200).json({ message: 'Task deleted successfully.' });
   } catch (error) {
