@@ -29,6 +29,7 @@ router.post('/', authenticateToken, (req, res) => {
 router.put('/:license_plate', authenticateToken, (req, res) => {
   const licensePlate = req.params.license_plate;
   const { brand, model, year_of_manufacture, odometer_reading, next_oil_change } = req.body;
+  console.log(req.body);
   db.query(
     'UPDATE cars SET brand = ?, model = ?, year_of_manufacture = ?, odometer_reading = ?, next_oil_change = ? WHERE license_plate = ?',
     [brand, model, year_of_manufacture, odometer_reading, next_oil_change, licensePlate],
