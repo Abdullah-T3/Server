@@ -14,16 +14,17 @@ router.get('/', authenticateToken, (req, res) => {
 
 // Add a booking (Protected)
 router.post('/', authenticateToken, (req, res) => {
-  const { booking_date, pickup_date, plate_number, customer_number, description, rental_days, rental_amount } = req.body;
+  const { booking_date, pickup_date, return_date, car_id, customer_id, description, rental_days, rental_amount } = req.body;
   db.query(
-    'INSERT INTO bookings (booking_date, pickup_date, plate_number, customer_number, description, rental_days, rental_amount) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [booking_date, pickup_date, plate_number, customer_number, description, rental_days, rental_amount],
-    (err, results) => {
-      if (err) return res.status(500).send(err);
-      res.status(201).send('Booking created');
-    }
+      'INSERT INTO bookings (booking_date, pickup_date, return_date, car_id, customer_id, description, rental_days, rental_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [booking_date, pickup_date, return_date, car_id, customer_id, description, rental_days, rental_amount],
+      (err, results) => {
+          if (err) return res.status(500).send(err);
+          res.status(201).send('Booking created');
+      }
   );
 });
+
 
 // Update a booking (Protected)
 router.put('/:id', authenticateToken, (req, res) => {
