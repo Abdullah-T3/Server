@@ -14,10 +14,20 @@ router.get('/', authenticateToken, (req, res) => {
 
 // Add a booking (Protected)
 router.post('/', authenticateToken, (req, res) => {
-  const { booking_date, pickup_date, return_date, car_id, customer_id, description, rental_days, rental_amount } = req.body;
+  const { 
+      booking_date, 
+      pickup_date, 
+      return_date, 
+      license_plate, // Updated from car_id
+      customer_id, 
+      description, 
+      rental_days, 
+      rental_amount 
+  } = req.body;
+
   db.query(
-      'INSERT INTO bookings (booking_date, pickup_date, return_date, car_id, customer_id, description, rental_days, rental_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [booking_date, pickup_date, return_date, car_id, customer_id, description, rental_days, rental_amount],
+      'INSERT INTO bookings (booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount],
       (err, results) => {
           if (err) return res.status(500).send(err);
           res.status(201).send('Booking created');
@@ -26,19 +36,29 @@ router.post('/', authenticateToken, (req, res) => {
 });
 
 
-// Update a booking (Protected)
 router.put('/:id', authenticateToken, (req, res) => {
   const bookingId = req.params.id;
-  const { booking_date, pickup_date, plate_number, customer_number, description, rental_days, rental_amount } = req.body;
+  const { 
+      booking_date, 
+      pickup_date, 
+      return_date, // Ensure to include return_date if needed
+      license_plate, // Updated from plate_number
+      customer_id,   // Updated from customer_number
+      description, 
+      rental_days, 
+      rental_amount 
+  } = req.body;
+
   db.query(
-    'UPDATE bookings SET booking_date = ?, pickup_date = ?, plate_number = ?, customer_number = ?, description = ?, rental_days = ?, rental_amount = ? WHERE booking_id = ?',
-    [booking_date, pickup_date, plate_number, customer_number, description, rental_days, rental_amount, bookingId],
-    (err, results) => {
-      if (err) return res.status(500).send(err);
-      res.send('Booking updated');
-    }
+      'UPDATE bookings SET booking_date = ?, pickup_date = ?, return_date = ?, license_plate = ?, customer_id = ?, description = ?, rental_days = ?, rental_amount = ? WHERE booking_id = ?',
+      [booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount, bookingId],
+      (err, results) => {
+          if (err) return res.status(500).send(err);
+          res.send('Booking updated');
+      }
   );
 });
+
 
 // Delete a booking (Protected)
 router.delete('/:id', authenticateToken, (req, res) => {
