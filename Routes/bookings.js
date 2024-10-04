@@ -6,7 +6,7 @@ const authenticateToken = require('../middleware/auth');
 
 // Get all bookings (Protected)
 router.get('/', authenticateToken, (req, res) => {
-  db.query('SELECT * FROM bookings', (err, results) => {
+  db.query('SELECT * FROM orders', (err, results) => {
     if (err) return res.status(500).send(err);
     res.json(results);
   });
@@ -16,6 +16,7 @@ router.get('/', authenticateToken, (req, res) => {
 router.post('/', authenticateToken, (req, res) => {
   const { 
       booking_date, 
+      customer_name,
       pickup_date, 
       return_date, 
       license_plate, // Updated from car_id
@@ -26,8 +27,8 @@ router.post('/', authenticateToken, (req, res) => {
   } = req.body;
 
   db.query(
-      'INSERT INTO bookings (booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount],
+      'INSERT INTO orders (booking_date, customer_name,pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount) VALUES (?, ? , ?, ?, ?, ?, ?, ?, ?)',
+      [booking_date, customer_name,pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount],
       (err, results) => {
           if (err) return res.status(500).send(err);
           res.status(201).send('Booking created');
@@ -50,7 +51,7 @@ router.put('/:id', authenticateToken, (req, res) => {
   } = req.body;
 
   db.query(
-      'UPDATE bookings SET booking_date = ?, pickup_date = ?, return_date = ?, license_plate = ?, customer_id = ?, description = ?, rental_days = ?, rental_amount = ? WHERE booking_id = ?',
+      'UPDATE orders SET booking_date = ?, pickup_date = ?, return_date = ?, license_plate = ?, customer_id = ?, description = ?, rental_days = ?, rental_amount = ? WHERE booking_id = ?',
       [booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount, bookingId],
       (err, results) => {
           if (err) return res.status(500).send(err);
@@ -63,7 +64,7 @@ router.put('/:id', authenticateToken, (req, res) => {
 // Delete a booking (Protected)
 router.delete('/:id', authenticateToken, (req, res) => {
   const bookingId = req.params.id;
-  db.query('DELETE FROM bookings WHERE booking_id = ?', [bookingId], (err, results) => {
+  db.query('DELETE FROM orders WHERE booking_id = ?', [bookingId], (err, results) => {
     if (err) return res.status(500).send(err);
     res.send('Booking deleted');
   });
