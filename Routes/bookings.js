@@ -1,72 +1,68 @@
-// routes/bookings.js
+// routes/orders.js
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const authenticateToken = require('../middleware/auth');
 
-// Get all bookings (Protected)
+// Get all orders (Protected)
 router.get('/', authenticateToken, (req, res) => {
-  db.query('SELECT * FROM orders', (err, results) => {
+  db.query('SELECT * FROM Orders', (err, results) => {
     if (err) return res.status(500).send(err);
     res.json(results);
   });
 });
 
-// Add a booking (Protected)
+// Add a new order (Protected)
 router.post('/', authenticateToken, (req, res) => {
   const { 
-      booking_date, 
       customer_name,
-      pickup_date, 
-      return_date, 
-      license_plate, // Updated from car_id
-      customer_id, 
-      description, 
+      customer_mobile,
+      car_license_plate, 
+      car_name, 
+      rental_date, 
       rental_days, 
-      rental_amount 
+      car_km_at_rental 
   } = req.body;
 
   db.query(
-      'INSERT INTO orders (booking_date, customer_name,pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount) VALUES (?, ? , ?, ?, ?, ?, ?, ?, ?)',
-      [booking_date, customer_name,pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount],
+      'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_days, car_km_at_rental) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_days, car_km_at_rental],
       (err, results) => {
           if (err) return res.status(500).send(err);
-          res.status(201).send('Booking created');
+          res.status(201).send('Order created');
       }
   );
 });
 
-
+// Update an order (Protected)
 router.put('/:id', authenticateToken, (req, res) => {
-  const bookingId = req.params.id;
+  const orderId = req.params.id;
   const { 
-      booking_date, 
-      pickup_date, 
-      return_date, // Ensure to include return_date if needed
-      license_plate, // Updated from plate_number
-      customer_id,   // Updated from customer_number
-      description, 
+      customer_name,
+      customer_mobile,
+      car_license_plate, 
+      car_name, 
+      rental_date, 
       rental_days, 
-      rental_amount 
+      car_km_at_rental 
   } = req.body;
 
   db.query(
-      'UPDATE orders SET booking_date = ?, pickup_date = ?, return_date = ?, license_plate = ?, customer_id = ?, description = ?, rental_days = ?, rental_amount = ? WHERE booking_id = ?',
-      [booking_date, pickup_date, return_date, license_plate, customer_id, description, rental_days, rental_amount, bookingId],
+      'UPDATE Orders SET customer_name = ?, customer_mobile = ?, car_license_plate = ?, car_name = ?, rental_date = ?, rental_days = ?, car_km_at_rental = ? WHERE order_id = ?',
+      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_days, car_km_at_rental, orderId],
       (err, results) => {
           if (err) return res.status(500).send(err);
-          res.send('Booking updated');
+          res.send('Order updated');
       }
   );
 });
 
-
-// Delete a booking (Protected)
+// Delete an order (Protected)
 router.delete('/:id', authenticateToken, (req, res) => {
-  const bookingId = req.params.id;
-  db.query('DELETE FROM orders WHERE booking_id = ?', [bookingId], (err, results) => {
+  const orderId = req.params.id;
+  db.query('DELETE FROM Orders WHERE order_id = ?', [orderId], (err, results) => {
     if (err) return res.status(500).send(err);
-    res.send('Booking deleted');
+    res.send('Order deleted');
   });
 });
 
