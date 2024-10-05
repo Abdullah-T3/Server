@@ -19,14 +19,15 @@ router.post('/', authenticateToken, (req, res) => {
       customer_mobile,
       car_license_plate, 
       car_name, 
-      rental_date, 
+      rental_date,
+      rental_amount, 
       rental_days, 
       car_km_at_rental 
   } = req.body;
 
   db.query(
-      'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_days, car_km_at_rental) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_days, car_km_at_rental],
+      'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [customer_name, customer_mobile, car_license_plate, car_name, rental_date,rental_amount, rental_days, car_km_at_rental],
       (err, results) => {
           if (err) return res.status(500).send(err);
           res.status(201).send('Order created');
