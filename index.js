@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const usersRouter = require('./Routes/users');
 const customersRouter = require('./Routes/customers');
 const carsRouter = require('./Routes/cars');
-const bookingsRouter = require('./Routes/bookings');
+const OrdersRoute = require('./Routes/ordersRoute');
 const tasksRoute = require('./Routes/tasks');
 require('dotenv').config();
 const cors = require('cors');
@@ -20,7 +20,7 @@ app.use(cors());
 app.use('/api/users', usersRouter);
 app.use('/api/customers', customersRouter);
 app.use('/api/cars', carsRouter);
-app.use('/api/bookings', bookingsRouter);
+app.use('/api/orders', OrdersRoute);
 app.use('/api/tasks', tasksRoute);
 // Start server
 app.listen(PORT, () => {
