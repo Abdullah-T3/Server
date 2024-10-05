@@ -44,13 +44,14 @@ router.put('/:id', authenticateToken, (req, res) => {
       car_license_plate, 
       car_name, 
       rental_date, 
+      rental_amount,
       rental_days, 
       car_km_at_rental 
   } = req.body;
 
   db.query(
-      'UPDATE Orders SET customer_name = ?, customer_mobile = ?, car_license_plate = ?, car_name = ?, rental_date = ?, rental_days = ?, car_km_at_rental = ? WHERE order_id = ?',
-      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_days, car_km_at_rental, orderId],
+      'UPDATE Orders SET customer_name = ?, customer_mobile = ?, car_license_plate = ?, car_name = ?, rental_date = ?, rental_amount = ?, rental_days = ?, car_km_at_rental = ? WHERE order_id = ?',
+      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, orderId],
       (err, results) => {
           if (err) return res.status(500).send(err);
           res.send('Order updated');
