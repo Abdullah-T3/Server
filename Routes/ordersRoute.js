@@ -36,7 +36,7 @@ router.post('/', authenticateToken,  (req, res) => {
 });
 
 // Update an order (Protected)
-router.put('/:id', authenticateToken, validateOrderInput, (req, res) => {
+router.put('/:id', authenticateToken,  (req, res) => {
   const orderId = req.params.id;
   const { 
     customer_name,
