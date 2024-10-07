@@ -37,6 +37,7 @@ router.post('/', authenticateToken,  (req, res) => {
 
 // Update an order (Protected)
 router.put('/:id', authenticateToken,  (req, res) => {
+  
   const orderId = req.params.id;
   const { 
     customer_name,
@@ -48,7 +49,7 @@ router.put('/:id', authenticateToken,  (req, res) => {
     rental_days, 
     car_km_at_rental 
   } = req.body;
-
+  console.log(req.body);
   db.query(
       'UPDATE Orders SET customer_name = ?, customer_mobile = ?, car_license_plate = ?, car_name = ?, rental_date = ?, rental_amount = ?, rental_days = ?, car_km_at_rental = ? WHERE order_id = ?',
       [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, orderId],
