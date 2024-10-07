@@ -35,8 +35,7 @@ router.post('/', authenticateToken,  (req, res) => {
   );
 });
 
-// Update an order (Protected)
-router.put('/:id', authenticateToken,  (req, res) => {
+router.put('/:id', authenticateToken, (req, res) => {
   
   const orderId = req.params.id;
   const { 
@@ -49,14 +48,38 @@ router.put('/:id', authenticateToken,  (req, res) => {
     rental_days, 
     car_km_at_rental 
   } = req.body;
-  console.log(req.body);
+  
+  console.log(req.body);  // For debugging purposes, prints the request body to the console
+  
+  const updateQuery = `
+    UPDATE Orders 
+    SET 
+      customer_name = '?', 
+      customer_mobile = '?', 
+      car_license_plate = '?', 
+      car_name = '?', 
+      rental_date = '?', 
+      rental_amount = '?', 
+      rental_days = '?', 
+      car_km_at_rental = '?' 
+    WHERE order_id = '?'
+  `;
+  
   db.query(
-      'UPDATE Orders SET customer_name = ?, customer_mobile = ?, car_license_plate = ?, car_name = ?, rental_date = ?, rental_amount = ?, rental_days = ?, car_km_at_rental = ? WHERE order_id = ?',
-      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, orderId],
-      (err, results) => {
-          if (err) return res.status(500).send(err);
-          res.send('Order updated');
+    updateQuery,
+    [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, orderId],
+    (err, results) => {
+      if (err) {
+        console.error('Error updating order:', err);  // Logs error in case of any issues with the query
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
+
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: 'Order not found' });  // Handles case where orderId does not exist
+      }
+
+      res.status(200).json({ message: 'Order updated successfully' });
+    }
   );
 });
 
