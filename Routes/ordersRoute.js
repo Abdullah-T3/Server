@@ -54,15 +54,15 @@ router.put('/:id', authenticateToken, (req, res) => {
   const updateQuery = `
     UPDATE Orders 
     SET 
-      customer_name = '?', 
-      customer_mobile = '?', 
-      car_license_plate = '?', 
-      car_name = '?', 
-      rental_date = '?', 
-      rental_amount = '?', 
-      rental_days = '?', 
-      car_km_at_rental = '?' 
-    WHERE order_id = '?'
+      customer_name = ?,
+      customer_mobile = ?, 
+      car_license_plate = ?, 
+      car_name = ? ,
+      rental_date = ?, 
+      rental_amount = ?, 
+      rental_days = ?, 
+      car_km_at_rental = ? 
+    WHERE order_id = ?
   `;
   
   db.query(
