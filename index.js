@@ -6,6 +6,7 @@ const customersRouter = require('./Routes/customers');
 const carsRouter = require('./Routes/cars');
 const OrdersRoute = require('./Routes/ordersRoute');
 const tasksRoute = require('./Routes/tasks');
+const expensesRoute = require('./Routes/expensesRoute');
 require('dotenv').config();
 const cors = require('cors');
 
@@ -22,6 +23,7 @@ app.use('/api/customers', customersRouter);
 app.use('/api/cars', carsRouter);
 app.use('/api/orders', OrdersRoute);
 app.use('/api/tasks', tasksRoute);
+app.use('/api/expenses', expensesRoute);
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
