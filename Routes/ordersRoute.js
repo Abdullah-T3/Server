@@ -15,8 +15,7 @@ router.get('/', authenticateToken, (req, res) => {
     if (err) return res.status(500).send(err);
     res.json(results);
   });
-});
- //Add a new order (Protected)
+});// Add a new order (Protected)
 router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   const { 
     customer_name, 
@@ -29,30 +28,47 @@ router.post('/', authenticateToken, upload.single('image'), async (req, res) => 
     car_km_at_rental 
   } = req.body;
 
-
   try {
+    // Ensure file is uploaded
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
     // Upload the image to Cloudinary
-    const result = await cloudinary.uploader.upload_stream((error, result) => {
+    const result = await cloudinary.uploader.upload_stream({ 
+      resource_type: 'auto' 
+    }, (error, result) => {
       if (error) {
-        return res.status(500).send(error);
+        return res.status(500).json({ error: 'Image upload failed' });
       }
       return result;
     });
 
-    // Save the order with the Cloudinary image URL
-    db.query(
-      'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, result.secure_url], // Use the Cloudinary URL
-      (err, results) => {
-        if (err) return res.status(500).send(err);
-        res.status(201).send('Order created');
+    // Pipe the file buffer to Cloudinary
+    const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+      if (error) {
+        return res.status(500).json({ error: 'Image upload failed' });
       }
-    );
+      // Save the order with the Cloudinary image URL
+      db.query(
+        'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, result.secure_url], // Use the Cloudinary URL
+        (err, results) => {
+          if (err) return res.status(500).send(err);
+          res.status(201).send('Order created');
+        }
+      );
+    });
+
+    // Write the file buffer to the stream
+    stream.end(req.file.buffer);
+
   } catch (error) {
     console.error('Error uploading image:', error);
     res.status(500).json({ error: 'Image upload failed' });
   }
 });
+
 // Delete an order (Protected)
 router.delete('/:id', authenticateToken, (req, res) => {
   const orderId = req.params.id;
