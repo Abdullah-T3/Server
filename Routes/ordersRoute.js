@@ -1,4 +1,7 @@
 // Add a new order (Protected)
+const express = require('express');
+const router = express.Router();
+const { authenticateToken } = require('../middleware/authenticateToken');
 router.post('/', authenticateToken, (req, res) => {
   const { 
     customer_name,
