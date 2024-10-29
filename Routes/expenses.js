@@ -1,85 +1,102 @@
+// ordersRoute.js
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
-const authenticateToken = require('../middleware/auth');
+const authenticateToken = require('../middleware/auth'); // Adjust path as needed
 
-// Get all expenses (Protected)
+// Get all orders (Protected)
 router.get('/', authenticateToken, (req, res) => {
-  db.query('SELECT * FROM Expenses', (err, results) => {
+  db.query('SELECT * FROM Orders', (err, results) => {
     if (err) return res.status(500).send(err);
     res.json(results);
   });
 });
 
-// Add a new expense (Protected)
+// Add a new order (Protected)
 router.post('/', authenticateToken, (req, res) => {
   const { 
-    project_id,
     customer_name,
-    description, 
-    car_details, 
-    expenses_date, 
-    cost, 
-    remaining 
+    customer_mobile,
+    car_license_plate, 
+    car_name, 
+    rental_date,
+    rental_amount, 
+    rental_days, 
+    car_km_at_rental 
   } = req.body;
 
+  // Check if customer_mobile is provided and valid
+  if (!customer_mobile || customer_mobile.length < 10) {
+    return res.status(400).json({ error: 'Invalid customer mobile number' });
+  }
+
   db.query(
-    'INSERT INTO Expenses (project_id, customer_name, description, car_details, expenses_date, cost, remaining) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [project_id, customer_name, description, car_details, expenses_date, cost, remaining],
+    'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+    [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental],
     (err, results) => {
       if (err) return res.status(500).send(err);
-      res.status(201).send('Expense created');
+      res.status(201).send('Order created');
     }
   );
 });
 
-// Update an expense (Protected)
+// Update an order (Protected)
 router.put('/:id', authenticateToken, (req, res) => {
-  const expenseId = req.params.id;
+  const orderId = req.params.id;
   const { 
-    project_id,
     customer_name,
-    description, 
-    car_details, 
-    expenses_date, 
-    cost, 
-    remaining 
+    customer_mobile,
+    car_license_plate, 
+    car_name, 
+    rental_date, 
+    rental_amount,
+    rental_days, 
+    car_km_at_rental 
   } = req.body;
 
-  const updateQuery = `
-    UPDATE Expenses 
-    SET 
-      project_id = ?,
-      customer_name = ?, 
-      description = ?, 
-      car_details = ?, 
-      expenses_date = ?, 
-      cost = ?, 
-      remaining = ? 
-    WHERE expenses_id = ?
-  `;
+  // Check if customer_mobile is provided and valid
+  if (!customer_mobile || customer_mobile.length < 10) {
+    return res.status(400).json({ error: 'Invalid customer mobile number' });
+  }
 
+  const updateQuery = `
+    UPDATE Orders 
+    SET 
+      customer_name = ?,
+      customer_mobile = ?, 
+      car_license_plate = ?, 
+      car_name = ? ,
+      rental_date = ?, 
+      rental_amount = ?, 
+      rental_days = ?, 
+      car_km_at_rental = ? 
+    WHERE order_id = ?
+  `;
+  
   db.query(
     updateQuery,
-    [project_id, customer_name, description, car_details, expenses_date, cost, remaining, expenseId],
+    [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, orderId],
     (err, results) => {
       if (err) return res.status(500).send(err);
 
       if (results.affectedRows === 0) {
-        return res.status(404).json({ message: 'Expense not found' });
+        return res.status(404).json({ message: 'Order not found' });
       }
 
-      res.status(200).json({ message: 'Expense updated successfully' });
+      res.status(200).json({ message: 'Order updated successfully' });
     }
   );
 });
 
-// Delete an expense (Protected)
+// Delete an order (Protected)
 router.delete('/:id', authenticateToken, (req, res) => {
-  const expenseId = req.params.id;
-  db.query('DELETE FROM Expenses WHERE expenses_id = ?', [expenseId], (err, results) => {
+  const orderId = req.params.id;
+  db.query('DELETE FROM Orders WHERE order_id = ?', [orderId], (err, results) => {
     if (err) return res.status(500).send(err);
-    res.send('Expense deleted');
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    res.send('Order deleted');
   });
 });
 
