@@ -15,7 +15,8 @@ router.get('/', authenticateToken, (req, res) => {
     if (err) return res.status(500).send(err);
     res.json(results);
   });
-});// Add a new order (Protected)
+});
+// Add a new order (Protected)
 router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   const { 
     customer_name, 
@@ -34,27 +35,27 @@ router.post('/', authenticateToken, upload.single('image'), async (req, res) => 
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Upload the image to Cloudinary
-    const result = await cloudinary.uploader.upload_stream({ 
+    // Log the uploaded file for debugging
+    console.log('Uploaded file:', req.file);
+
+    // Create a stream to upload the image to Cloudinary
+    const stream = cloudinary.uploader.upload_stream({ 
       resource_type: 'auto' 
     }, (error, result) => {
       if (error) {
-        return res.status(500).json({ error: 'Image upload failed' });
+        console.error('Cloudinary upload error:', error); // Log the error for debugging
+        return res.status(500).json({ error: 'Image upload failed', details: error });
       }
-      return result;
-    });
 
-    // Pipe the file buffer to Cloudinary
-    const stream = cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
-      if (error) {
-        return res.status(500).json({ error: 'Image upload failed' });
-      }
-      // Save the order with the Cloudinary image URL
+      // If the upload is successful, save the order with the Cloudinary image URL
       db.query(
         'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, result.secure_url], // Use the Cloudinary URL
         (err, results) => {
-          if (err) return res.status(500).send(err);
+          if (err) {
+            console.error('Database error:', err); // Log the database error
+            return res.status(500).send(err);
+          }
           res.status(201).send('Order created');
         }
       );
