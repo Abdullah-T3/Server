@@ -1,7 +1,8 @@
 // Add a new order (Protected)
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/authenticateToken');
+const { authenticateToken } = require('../middleware/auth.js');
+const db = require('../config/db');
 router.post('/', authenticateToken, (req, res) => {
   const { 
     customer_name,
