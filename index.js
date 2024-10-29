@@ -8,7 +8,7 @@ const OrdersRoute = require('./Routes/ordersRoute');
 const tasksRoute = require('./Routes/tasks');
 const expensesRoute = require('./Routes/expenses');
 const cors = require('cors');
-const photoRoutes = require('./routes/photos');
+const photoRoutes = require('./Routes/photos');
 const app = express();
 const PORT = process.env.PORT || 3000;
 require('dotenv').config();
