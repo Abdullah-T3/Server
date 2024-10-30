@@ -11,7 +11,7 @@ router.get('/', authenticateToken, (req, res) => {
   });
 });
 
-// Add a new order (Protected)
+/// Add a new order (Protected)
 router.post('/', authenticateToken, async (req, res) => {
   const { 
     customer_name, 
@@ -26,22 +26,33 @@ router.post('/', authenticateToken, async (req, res) => {
   } = req.body;
 
   try {
-    // Ensure image URL is provided
-
-
-    // Log the received image URL for debugging
-    console.log('Received image URL:', image_url);
-
-    // Save the order with the provided image URL
+    // Check if the car_license_plate already exists in the database
     db.query(
-      'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url],
+      'SELECT * FROM Orders WHERE car_license_plate = ?',
+      [car_license_plate],
       (err, results) => {
         if (err) {
           console.error('Database error:', err); // Log the database error
           return res.status(500).send(err);
         }
-        res.status(201).send('Order created');
+
+        // If a result is found, send a conflict response
+        if (results.length > 0) {
+          return res.status(409).json({ error: 'Order with this car license plate already exists' });
+        }
+
+        // If no existing entry, proceed to insert the new order
+        db.query(
+          'INSERT INTO Orders (customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+          [customer_name, customer_mobile, car_license_plate, car_name, rental_date, rental_amount, rental_days, car_km_at_rental, image_url],
+          (err, results) => {
+            if (err) {
+              console.error('Database error:', err); // Log the database error
+              return res.status(500).send(err);
+            }
+            res.status(201).send('Order created');
+          }
+        );
       }
     );
     
