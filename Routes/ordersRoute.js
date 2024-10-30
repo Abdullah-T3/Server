@@ -27,9 +27,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
   try {
     // Ensure image URL is provided
-    if (!image_url) {
-      return res.status(400).json({ error: 'Image URL is required' });
-    }
+
 
     // Log the received image URL for debugging
     console.log('Received image URL:', image_url);
